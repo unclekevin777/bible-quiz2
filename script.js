@@ -1,6 +1,5 @@
 let questions = [];
 let selected = [];
-let usedQuestions = []; // ⬅️ 新增：紀錄已出過的題目
 let current = 0;
 let score = 0;
 let gameRound = 1;
@@ -30,19 +29,7 @@ fetch('questions.json')
 function startGame() {
   score = 0;
   current = 0;
-
-  // 過濾出未使用的題目
-  const unused = questions.filter(q => !usedQuestions.includes(q.question));
-
-  // 題目不足時直接破關
-  if (unused.length < questionsPerRound) {
-    endGame("🎉 你已完成所有題目，破關成功！");
-    return;
-  }
-
-  selected = shuffle(unused).slice(0, questionsPerRound);
-  usedQuestions.push(...selected.map(q => q.question));
-
+  selected = shuffle(questions).slice(0, questionsPerRound);
   startTimer();
   showQuestion();
 }
@@ -94,8 +81,8 @@ nextBtn.onclick = () => {
     showQuestion();
   } else {
     gameRound++;
-    if (gameRound > totalRounds || usedQuestions.length >= questions.length) {
-      endGame('🎉 恭喜！你已完成所有題目，破關成功！');
+    if (gameRound > totalRounds) {
+      endGame('恭喜！你已完成 30 次挑戰，破關成功 🎉');
     } else {
       alert(`你已完成第 ${gameRound - 1} 回合，進入第 ${gameRound} 回合`);
       startGame();
@@ -111,6 +98,6 @@ function endGame(message) {
   blessingEl.textContent = score === questionsPerRound
     ? '神的話在你心中發旺，真棒！'
     : score >= 10
-      ? '不錯哦，再接再勵！'
+      ? '不錯哦，再接再厲！'
       : '繼續努力，熟讀聖經是長久之道！';
 }
